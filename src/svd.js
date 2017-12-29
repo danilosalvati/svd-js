@@ -179,7 +179,7 @@ const SVD = (withu, withv, eps, tol, a) => {
       c = 0
       s = 1
       l1 = l - 1
-      for (i = l; i < k + 1; i++) { // TODO: Check other k + 1 conditions!!!!!!!!!!!!
+      for (i = l; i < k + 1; i++) {
         f = s * e[i]
         e[i] = c * e[i]
         if (Math.abs(f) <= eps) {
