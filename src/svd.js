@@ -104,7 +104,7 @@ const SVD = (withu, withv, eps, tol, a) => {
   if (withv) {
     for (i = n - 1; i >= 0; i--) {
       if (g !== 0) {
-        h = u[i][i + 1] * g;
+        h = u[i][i + 1] * g
         for (j = l; j < n; j++) {
           v[j][i] = u[i][j] / h
         }
@@ -119,10 +119,10 @@ const SVD = (withu, withv, eps, tol, a) => {
         }
       }
       for (j = l; j < n; j++) {
-        v[i][j] = 0;
-        v[j][i] = 0;
+        v[i][j] = 0
+        v[j][i] = 0
       }
-      v[i][i] = 1;
+      v[i][i] = 1
       g = e[i]
       l = i
     }
@@ -137,7 +137,7 @@ const SVD = (withu, withv, eps, tol, a) => {
         u[i][j] = 0
       }
       if (g !== 0) {
-        h = u[i][i] * g;
+        h = u[i][i] * g
         for (j = l; j < n; j++) {
           s = 0
           for (k = l; k < m; k++) {
@@ -149,7 +149,7 @@ const SVD = (withu, withv, eps, tol, a) => {
           }
         }
         for (j = i; j < m; j++) {
-          u[j][i] = u[j][i] / g;
+          u[j][i] = u[j][i] / g
         }
       } else {
         for (j = i; j < m; j++) {
@@ -161,8 +161,115 @@ const SVD = (withu, withv, eps, tol, a) => {
   }
 
   // Diagonalization of the bidiagonal form
+  eps = eps * x
+  for (k = n - 1; k >= 0; k--) {
+    // test-f-splitting
+    let testConvergence = false
+    for (l = k - 1; l >= 0; l--) {
+      if (Math.abs(e[l]) <= eps) {
+        testConvergence = true
+        break
+      }
+      if (Math.abs(q[l - 1]) <= eps) {
+        break
+      }
+    }
 
-  throw new Error('Not implemented yet')
+    if (!testConvergence) { // cancellation of e[l] if l>0
+      c = 0
+      s = 1
+      l1 = l - 1
+      for (i = l; i < k + 1; i++) { // TODO: Check other k + 1 conditions!!!!!!!!!!!!
+        f = s * e[i]
+        e[i] = c * e[i]
+        if (Math.abs(f) <= eps) {
+          break // goto test-f-convergence
+        }
+        g = q[i]
+        q[i] = Math.sqrt(f * f + g * g)
+        h = q[i]
+        c = g / h
+        s = -f / h
+        if (withu) {
+          for (j = 1; j < m; j++) {
+            y = u[j][l1]
+            z = u[j][i]
+            u[j][l1] = y * c + z * s
+            u[j][i] = -y * s + z * c
+          }
+        }
+      }
+    }
+
+    // test f convergence
+    z = q[k]
+    if (l === k) { // convergence
+      if (z < 0) {
+        // q[k] is made non-negative
+        q[k] = -z
+        if (withv) {
+          for (j = 0; j < n; j++) {
+            v[j][k] = -v[j][k]
+          }
+        }
+      }
+      break // break out of iteration loop and move on to next k value
+    }
+
+    // Shift from bottom 2x2 minor
+    x = q[l]
+    y = q[k - 1]
+    g = e[k - 1]
+    h = e[k]
+    f = ((y - z) * (y + z) + (g - h) * (g + h)) / (2 * h * y)
+    g = Math.sqrt(f * f + 1)
+    f = ((x - z) * (x + z) + h * (y / (f < 0 ? (f - g) : (f + g)) - h)) / x
+
+    // Next QR transformation
+    c = 1
+    s = 1
+    for (i = l + 1; i < k + 1; i++) {
+      g = e[i]
+      y = q[i]
+      h = s * g
+      g = c * g
+      z = Math.sqrt(f * f + h * h)
+      e[i - 1] = z
+      c = f / z
+      s = h / z
+      f = x * c + g * s
+      g = -x * s + g * c
+      h = y * s
+      y = y * c
+      if (withv) {
+        for (j = 1; j < n; j++) {
+          x = v[j][i - 1]
+          z = v[j][i]
+          v[j][i - 1] = x * c + z * s
+          v[j][i] = -x * s + z * c
+        }
+      }
+      z = Math.sqrt(f * f + h * h)
+      q[i - 1] = z
+      c = f / z
+      s = h / z
+      f = c * g + s * y
+      x = -s * g + c * y
+      if (withu) {
+        for (j = 0; j < m; j++) {
+          y = u[j][i - 1]
+          z = u[j][i]
+          u[j][i - 1] = y * c + z * s
+          u[j][i] = -y * s + z * c
+        }
+      }
+    }
+    e[l] = 0
+    e[k] = f
+    q[k] = x
+  }
+
+  return {u, q, v}
 }
 
 export default SVD
