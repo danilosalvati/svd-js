@@ -6,12 +6,12 @@
  * all be identical unless withu = withv = {true}. In this case, the actual parameters corresponding to u and v must
  * differ. m >= n is assumed (with m = a.length and n = a[0].length)
  *
- *  @param withu {bool} {true} if U is desired {false} otherwise
- *  @param withv {bool} {true} if U is desired {false} otherwise
- *  @param eps {Number} A constant used in the test for convergence; should not be smaller than the machine precision
- *  @param tol {Number} A machine dependent constant which should be set equal to B/eps0 where B is the smallest
- *    positive number representable in the computer
  *  @param a {Array} Represents the matrix A to be decomposed
+ *  @param [withu] {bool} {true} if U is desired {false} otherwise
+ *  @param [withv] {bool} {true} if U is desired {false} otherwise
+ *  @param [eps] {Number} A constant used in the test for convergence; should not be smaller than the machine precision
+ *  @param [tol] {Number} A machine dependent constant which should be set equal to B/eps0 where B is the smallest
+ *    positive number representable in the computer
  *
  *  @returns {Object} An object containing:
  *    q: A vector holding the singular values of A; they are non-negative but not necessarily ordered in
@@ -21,7 +21,18 @@
  *    v: Represents the orthogonal matrix V (if withv is {true}, otherwise v is not used)
  *
  */
-const SVD = (withu, withv, eps, tol, a) => {
+const SVD = (a, withu, withv, eps, tol) => {
+  // Define default parameters
+  withu = withu || true
+  withv = withv || true
+  eps = eps || 1e-6
+  tol = Number.MIN_VALUE / eps
+
+  // throw error if a is not defined
+  if (!a) {
+    throw new TypeError('Matrix a is not defined')
+  }
+
   // Householder's reduction to bidiagonal form
 
   let n = a[0].length
@@ -36,6 +47,19 @@ const SVD = (withu, withv, eps, tol, a) => {
   let u = []
   let v = []
   let q = []
+
+  // Initialize u
+  for (i = 0; i < m; i++) {
+    u[i] = new Array(n).fill(0)
+  }
+
+  // Initialize v
+  for (i = 0; i < n; i++) {
+    v[i] = new Array(n).fill(0)
+  }
+
+  // Initialize q
+  q = new Array(n).fill(0)
 
   // Copy array a in u
   for (i = 0; i < m; i++) {
@@ -269,7 +293,11 @@ const SVD = (withu, withv, eps, tol, a) => {
     q[k] = x
   }
 
-  return {u, q, v}
+  console.log('u = ', u, '\n\n')
+  console.log('v = ', v, '\n\n')
+  console.log('q = ', q, '\n\n')
+  throw new Error('Not implemented yet')
+  // return {u, q, v}
 }
 
 export default SVD
