@@ -46,7 +46,7 @@ const SVD = (a, withu, withv, eps, tol) => {
 
   let u = []
   let v = []
-  let q = []
+  let q
 
   // Initialize u
   for (i = 0; i < m; i++) {
@@ -186,10 +186,11 @@ const SVD = (a, withu, withv, eps, tol) => {
 
   // Diagonalization of the bidiagonal form
   eps = eps * x
+  let testConvergence
   for (k = n - 1; k >= 0; k--) {
     // test-f-splitting
-    let testConvergence = false
-    for (l = k - 1; l >= 0; l--) { // TODO bug?
+    testConvergence = false
+    for (l = k; l >= 0; l--) { // TODO bug?
       if (Math.abs(e[l]) <= eps) {
         testConvergence = true
         break
@@ -215,19 +216,15 @@ const SVD = (a, withu, withv, eps, tol) => {
         c = g / h
         s = -f / h
         if (withu) {
-          for (j = 1; j < m; j++) {
+          for (j = 0; j < m; j++) {
             y = u[j][l1]
             z = u[j][i]
-            if (l1 < 0) {
-              console.log('AHHHHHHHHHHHHHHHHHHHHHHHHHHHH')
-            }
-            u[j][l1] = y * c + z * s
-            u[j][i] = -y * s + z * c
+            u[j][l1] = y * c + (z * s)
+            u[j][i] = -y * s + (z * c)
           }
         }
       }
     }
-    console.log('\n\n\n', u, '\n\n\n')
 
     // test f convergence
     z = q[k]
@@ -241,7 +238,7 @@ const SVD = (a, withu, withv, eps, tol) => {
           }
         }
       }
-      break // break out of iteration loop and move on to next k value
+      continue // break out of iteration loop and move on to next k value
     }
 
     // Shift from bottom 2x2 minor
@@ -270,7 +267,7 @@ const SVD = (a, withu, withv, eps, tol) => {
       h = y * s
       y = y * c
       if (withv) {
-        for (j = 1; j < n; j++) {
+        for (j = 0; j < n; j++) {
           x = v[j][i - 1]
           z = v[j][i]
           v[j][i - 1] = x * c + z * s
