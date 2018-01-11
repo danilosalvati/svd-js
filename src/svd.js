@@ -188,110 +188,116 @@ const SVD = (a, withu, withv, eps, tol) => {
   eps = eps * x
   let testConvergence
   for (k = n - 1; k >= 0; k--) {
-    // test-f-splitting
-    testConvergence = false
-    for (l = k; l >= 0; l--) { // TODO bug?
-      if (Math.abs(e[l]) <= eps) {
-        testConvergence = true
-        break
-      }
-      if (Math.abs(q[l - 1]) <= eps) {
-        break
-      }
-    }
-
-    if (!testConvergence) { // cancellation of e[l] if l>0
-      c = 0
-      s = 1
-      l1 = l - 1
-      for (i = l; i < k + 1; i++) {
-        f = s * e[i]
-        e[i] = c * e[i]
-        if (Math.abs(f) <= eps) {
-          break // goto test-f-convergence
+    for (let iteration = 0; iteration < 50; iteration++) {
+      console.log('\n++++++++++++++++++++++++++\nSTART K ITERATION:', k, '\n++++++++++++++++++++++++++\n')
+      console.log('q value: ', q)
+      // test-f-splitting
+      testConvergence = false
+      for (l = k; l >= 0; l--) {
+        if (Math.abs(e[l]) <= eps) {
+          testConvergence = true
+          break
         }
-        g = q[i]
-        q[i] = Math.sqrt(f * f + g * g)
-        h = q[i]
-        c = g / h
-        s = -f / h
-        if (withu) {
-          for (j = 0; j < m; j++) {
-            y = u[j][l1]
-            z = u[j][i]
-            u[j][l1] = y * c + (z * s)
-            u[j][i] = -y * s + (z * c)
+        if (Math.abs(q[l - 1]) <= eps) {
+          break
+        }
+      }
+
+      console.log('testConvergence = ', testConvergence)
+
+      if (!testConvergence) { // cancellation of e[l] if l>0
+        c = 0
+        s = 1
+        l1 = l - 1
+        for (i = l; i < k + 1; i++) {
+          f = s * e[i]
+          e[i] = c * e[i]
+          if (Math.abs(f) <= eps) {
+            break // goto test-f-convergence
+          }
+          g = q[i]
+          q[i] = Math.sqrt(f * f + g * g)
+          h = q[i]
+          c = g / h
+          s = -f / h
+          if (withu) {
+            for (j = 0; j < m; j++) {
+              y = u[j][l1]
+              z = u[j][i]
+              u[j][l1] = y * c + (z * s)
+              u[j][i] = -y * s + (z * c)
+            }
           }
         }
       }
-    }
 
-    // test f convergence
-    z = q[k]
-    if (l === k) { // convergence
-      if (z < 0) {
-        // q[k] is made non-negative
-        q[k] = -z
+      // test f convergence
+      z = q[k]
+      if (l === k) { // convergence
+        if (z < 0) {
+          // q[k] is made non-negative
+          q[k] = -z
+          if (withv) {
+            for (j = 0; j < n; j++) {
+              v[j][k] = -v[j][k]
+            }
+          }
+        }
+        break // break out of iteration loop and move on to next k value
+      }
+
+      // Shift from bottom 2x2 minor
+      x = q[l]
+      y = q[k - 1]
+      g = e[k - 1]
+      h = e[k]
+      f = ((y - z) * (y + z) + (g - h) * (g + h)) / (2 * h * y)
+      g = Math.sqrt(f * f + 1)
+      f = ((x - z) * (x + z) + h * (y / (f < 0 ? (f - g) : (f + g)) - h)) / x
+
+      // Next QR transformation
+      c = 1
+      s = 1
+      for (i = l + 1; i < k + 1; i++) {
+        g = e[i]
+        y = q[i]
+        h = s * g
+        g = c * g
+        z = Math.sqrt(f * f + h * h)
+        e[i - 1] = z
+        c = f / z
+        s = h / z
+        f = x * c + g * s
+        g = -x * s + g * c
+        h = y * s
+        y = y * c
         if (withv) {
           for (j = 0; j < n; j++) {
-            v[j][k] = -v[j][k]
+            x = v[j][i - 1]
+            z = v[j][i]
+            v[j][i - 1] = x * c + z * s
+            v[j][i] = -x * s + z * c
+          }
+        }
+        z = Math.sqrt(f * f + h * h)
+        q[i - 1] = z
+        c = f / z
+        s = h / z
+        f = c * g + s * y
+        x = -s * g + c * y
+        if (withu) {
+          for (j = 0; j < m; j++) {
+            y = u[j][i - 1]
+            z = u[j][i]
+            u[j][i - 1] = y * c + z * s
+            u[j][i] = -y * s + z * c
           }
         }
       }
-      continue // break out of iteration loop and move on to next k value
+      e[l] = 0
+      e[k] = f
+      q[k] = x
     }
-
-    // Shift from bottom 2x2 minor
-    x = q[l]
-    y = q[k - 1]
-    g = e[k - 1]
-    h = e[k]
-    f = ((y - z) * (y + z) + (g - h) * (g + h)) / (2 * h * y)
-    g = Math.sqrt(f * f + 1)
-    f = ((x - z) * (x + z) + h * (y / (f < 0 ? (f - g) : (f + g)) - h)) / x
-
-    // Next QR transformation
-    c = 1
-    s = 1
-    for (i = l + 1; i < k + 1; i++) {
-      g = e[i]
-      y = q[i]
-      h = s * g
-      g = c * g
-      z = Math.sqrt(f * f + h * h)
-      e[i - 1] = z
-      c = f / z
-      s = h / z
-      f = x * c + g * s
-      g = -x * s + g * c
-      h = y * s
-      y = y * c
-      if (withv) {
-        for (j = 0; j < n; j++) {
-          x = v[j][i - 1]
-          z = v[j][i]
-          v[j][i - 1] = x * c + z * s
-          v[j][i] = -x * s + z * c
-        }
-      }
-      z = Math.sqrt(f * f + h * h)
-      q[i - 1] = z
-      c = f / z
-      s = h / z
-      f = c * g + s * y
-      x = -s * g + c * y
-      if (withu) {
-        for (j = 0; j < m; j++) {
-          y = u[j][i - 1]
-          z = u[j][i]
-          u[j][i - 1] = y * c + z * s
-          u[j][i] = -y * s + z * c
-        }
-      }
-    }
-    e[l] = 0
-    e[k] = f
-    q[k] = x
   }
 
   console.log('u = ', u, '\n\n')
