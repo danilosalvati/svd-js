@@ -25,8 +25,8 @@ const SVD = (a, withu, withv, eps, tol) => {
   // Define default parameters
   withu = withu || true
   withv = withv || true
-  eps = eps || 1e-6
-  tol = Number.MIN_VALUE / eps
+  eps = eps || Math.pow(2, -52)
+  tol = 1e-64 / eps
 
   // throw error if a is not defined
   if (!a) {
@@ -189,8 +189,6 @@ const SVD = (a, withu, withv, eps, tol) => {
   let testConvergence
   for (k = n - 1; k >= 0; k--) {
     for (let iteration = 0; iteration < 50; iteration++) {
-      console.log('\n++++++++++++++++++++++++++\nSTART K ITERATION:', k, '\n++++++++++++++++++++++++++\n')
-      console.log('u value: ', u)
       // test-f-splitting
       testConvergence = false
       for (l = k; l >= 0; l--) {
@@ -202,8 +200,6 @@ const SVD = (a, withu, withv, eps, tol) => {
           break
         }
       }
-
-      console.log('testConvergence = ', testConvergence)
 
       if (!testConvergence) { // cancellation of e[l] if l>0
         c = 0
@@ -304,28 +300,6 @@ const SVD = (a, withu, withv, eps, tol) => {
   for (i = 0; i < n; i++) {
     if (q[i] < eps) q[i] = 0
   }
-
-  // Sort eigenvalues
-  // for (i = 0; i < n; i++) {
-  //   for (j = i - 1; j >= 0; j--) {
-  //     if (q[j] < q[i]) {
-  //       c = q[j]
-  //       q[j] = q[i]
-  //       q[i] = c
-  //       for (k = 0; k < m; k++) {
-  //         let tmp = u[k][i]
-  //         u[k][i] = u[k][j]
-  //         u[k][j] = tmp
-  //       }
-  //       for (k = 0; k < n; k++) {
-  //         let tmp = v[k][i]
-  //         v[k][i] = v[k][j]
-  //         v[k][j] = tmp
-  //       }
-  //       i = j
-  //     }
-  //   }
-  // }
 
   console.log('u = ', u, '\n\n')
   console.log('v = ', v, '\n\n')
