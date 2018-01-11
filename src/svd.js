@@ -179,8 +179,8 @@ const SVD = (a, withu, withv, eps, tol) => {
         for (j = i; j < m; j++) {
           u[j][i] = 0
         }
-        u[i][i] = u[i][i] + 1
       }
+      u[i][i] = u[i][i] + 1
     }
   }
 
@@ -190,7 +190,7 @@ const SVD = (a, withu, withv, eps, tol) => {
   for (k = n - 1; k >= 0; k--) {
     for (let iteration = 0; iteration < 50; iteration++) {
       console.log('\n++++++++++++++++++++++++++\nSTART K ITERATION:', k, '\n++++++++++++++++++++++++++\n')
-      console.log('q value: ', q)
+      console.log('u value: ', u)
       // test-f-splitting
       testConvergence = false
       for (l = k; l >= 0; l--) {
@@ -299,6 +299,33 @@ const SVD = (a, withu, withv, eps, tol) => {
       q[k] = x
     }
   }
+
+  // Number below eps should be zero
+  for (i = 0; i < n; i++) {
+    if (q[i] < eps) q[i] = 0
+  }
+
+  // Sort eigenvalues
+  // for (i = 0; i < n; i++) {
+  //   for (j = i - 1; j >= 0; j--) {
+  //     if (q[j] < q[i]) {
+  //       c = q[j]
+  //       q[j] = q[i]
+  //       q[i] = c
+  //       for (k = 0; k < m; k++) {
+  //         let tmp = u[k][i]
+  //         u[k][i] = u[k][j]
+  //         u[k][j] = tmp
+  //       }
+  //       for (k = 0; k < n; k++) {
+  //         let tmp = v[k][i]
+  //         v[k][i] = v[k][j]
+  //         v[k][j] = tmp
+  //       }
+  //       i = j
+  //     }
+  //   }
+  // }
 
   console.log('u = ', u, '\n\n')
   console.log('v = ', v, '\n\n')
