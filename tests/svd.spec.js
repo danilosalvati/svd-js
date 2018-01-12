@@ -59,4 +59,153 @@ describe('SVD tests', () => {
 
     done()
   })
+
+  it('Should work with Golub and Reinsch second example', (done) => {
+    let a = []
+    for (let i = 0; i < 21; i++) {
+      a[i] = new Array(20)
+      for (let j = 0; j < 20; j++) {
+        if (i > j) {
+          a[i][j] = 0
+        } else if (i === j) {
+          a[i][j] = 21 - i
+        } else {
+          a[i][j] = -1
+        }
+      }
+    }
+
+    let {u, v, q} = SVD(a)
+
+    assert.approximately(q[0], 21.45, 1e-2)
+    assert.approximately(q[1], 20.45, 1e-2)
+    assert.approximately(q[2], 19.44, 1e-2)
+    assert.approximately(q[3], 18.44, 1e-2)
+    assert.approximately(q[4], 17.44, 1e-2)
+    assert.approximately(q[5], 16.43, 1e-2)
+    assert.approximately(q[6], 15.43, 1e-2)
+    assert.approximately(q[7], 14.42, 1e-2)
+    assert.approximately(q[8], 13.42, 1e-2)
+    assert.approximately(q[9], 12.41, 1e-2)
+    assert.approximately(q[10], 11.40, 1e-2)
+    assert.approximately(q[11], 0.99, 1e-2)
+    assert.approximately(q[12], 10.39, 1e-2)
+    assert.approximately(q[13], 9.38, 1e-2)
+    assert.approximately(q[14], 3.14, 1e-2)
+    assert.approximately(q[15], 4.24, 1e-2)
+    assert.approximately(q[16], 8.37, 1e-2)
+    assert.approximately(q[17], 5.29, 1e-2)
+    assert.approximately(q[18], 7.35, 1e-2)
+    assert.approximately(q[19], 6.33, 1e-2)
+
+    let U = math.matrix(u)
+    let V = math.matrix(v)
+
+    let Ut = math.transpose(u)
+    let Vt = math.transpose(V)
+
+    let UtU = math.multiply(Ut, U)
+
+    assert.deepEqual(UtU.size(), [20, 20])
+
+    // Check if it is an identity matrix
+    for (let i = 0; i < UtU.size()[0]; i++) {
+      for (let j = 0; j < UtU.size()[1]; j++) {
+        assert.approximately(UtU.get([i, j]), (i === j) ? 1 : 0, 1e-4)
+      }
+    }
+
+    let VtV = math.multiply(Vt, V)
+
+    assert.deepEqual(VtV.size(), [20, 20])
+
+    // Check if it is an identity matrix
+    for (let i = 0; i < VtV.size()[0]; i++) {
+      for (let j = 0; j < VtV.size()[1]; j++) {
+        assert.approximately(VtV.get([i, j]), (i === j) ? 1 : 0, 1e-4)
+      }
+    }
+
+    done()
+  })
+
+  it('Should work with Golub and Reinsch third example', (done) => {
+    let a = []
+    for (let i = 0; i < 30; i++) {
+      a[i] = new Array(30)
+      for (let j = 0; j < 30; j++) {
+        if (i > j) {
+          a[i][j] = 0
+        } else if (i === j) {
+          a[i][j] = 1
+        } else {
+          a[i][j] = -1
+        }
+      }
+    }
+
+    let {u, v, q} = SVD(a)
+
+    assert.approximately(q[0], 18.20, 1e-2)
+    assert.approximately(q[1], 6.22, 1e-2)
+    assert.approximately(q[2], 3.91, 1e-2)
+    assert.approximately(q[3], 2.97, 1e-2)
+    assert.approximately(q[4], 2.49, 1e-2)
+    assert.approximately(q[5], 0, 1e-2)
+    assert.approximately(q[6], 2.20, 1e-2)
+    assert.approximately(q[7], 2.01, 1e-2)
+    assert.approximately(q[8], 1.89, 1e-2)
+    assert.approximately(q[9], 1.80, 1e-2)
+    assert.approximately(q[10], 1.74, 1e-2)
+    assert.approximately(q[11], 1.69, 1e-2)
+    assert.approximately(q[12], 1.65, 1e-2)
+    assert.approximately(q[13], 1.62, 1e-2)
+    assert.approximately(q[14], 1.60, 1e-2)
+    assert.approximately(q[15], 1.58, 1e-2)
+    assert.approximately(q[16], 1.56, 1e-2)
+    assert.approximately(q[17], 1.55, 1e-2)
+    assert.approximately(q[18], 1.54, 1e-2)
+    assert.approximately(q[19], 1.53, 1e-2)
+    assert.approximately(q[20], 1.52, 1e-2)
+    assert.approximately(q[21], 1.52, 1e-2)
+    assert.approximately(q[22], 1.51, 1e-2)
+    assert.approximately(q[23], 1.51, 1e-2)
+    assert.approximately(q[24], 1.50, 1e-2)
+    assert.approximately(q[25], 1.50, 1e-2)
+    assert.approximately(q[26], 1.50, 1e-2)
+    assert.approximately(q[27], 1.50, 1e-2)
+    assert.approximately(q[28], 1.50, 1e-2)
+    assert.approximately(q[29], 1.50, 1e-2)
+
+    let U = math.matrix(u)
+    let V = math.matrix(v)
+
+    let Ut = math.transpose(u)
+    let Vt = math.transpose(V)
+
+    let UtU = math.multiply(Ut, U)
+
+    assert.deepEqual(UtU.size(), [30, 30])
+
+    // Check if it is an identity matrix
+    for (let i = 0; i < UtU.size()[0]; i++) {
+      for (let j = 0; j < UtU.size()[1]; j++) {
+        assert.approximately(UtU.get([i, j]), (i === j) ? 1 : 0, 1e-4)
+      }
+    }
+
+    let VtV = math.multiply(Vt, V)
+
+    assert.deepEqual(VtV.size(), [30, 30])
+
+    // Check if it is an identity matrix
+    for (let i = 0; i < VtV.size()[0]; i++) {
+      for (let j = 0; j < VtV.size()[1]; j++) {
+        assert.approximately(VtV.get([i, j]), (i === j) ? 1 : 0, 1e-4)
+      }
+    }
+
+    done()
+  })
+
 })
