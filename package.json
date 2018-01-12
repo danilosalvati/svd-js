@@ -2,7 +2,10 @@
   "name": "svd-js",
   "version": "0.0.1",
   "description": "A package for the computation of Singular Value Decomposition",
-  "main": "lib/index.js",
+  "main": "./build-commonjs/index.js",
+  "module": "./build-es/index.js",
+  "browser": "./build-umd/svd-js.min.js",
+  "jsnext:main": "./build-es/index.js",
   "scripts": {
     "build-commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir build-commonjs",
     "build-es": "cross-env BABEL_ENV=es babel src --out-dir build-es",
@@ -12,7 +15,9 @@
     "build": "npm-run-all clean build-commonjs build-es build-umd build-umd-min",
     "test": "standard src/**/*.js test/**/*.js && cross-env BABEL_ENV=commonjs nyc --reporter=html --reporter=text mocha --require babel-register ./tests/*.spec.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "version": "const-version ./package.json ./version.js"
+    "update-version-file": "const-version ./package.json ./src/version.js",
+    "version": "npm run update-version-file && npm run build && npm run add-build-to-vcs",
+    "add-build-to-vcs": "git add -A ./version.js && git add -A build-es && git add -A build-umd && git add -A build-commonjs"
   },
   "repository": {
     "type": "git",
