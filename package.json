@@ -11,7 +11,8 @@
     "clean": "del build-*",
     "build": "npm-run-all clean build-commonjs build-es build-umd build-umd-min",
     "test": "standard src/**/*.js test/**/*.js && cross-env BABEL_ENV=commonjs nyc --reporter=html --reporter=text mocha --require babel-register ./tests/*.spec.js",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "version": "const-version ./package.json ./version.js"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "^6.24.1",
     "chai": "^4.1.2",
+    "const-version": "^1.0.1",
     "coveralls": "^3.0.0",
     "cross-env": "^5.1.3",
     "del-cli": "^1.1.0",
