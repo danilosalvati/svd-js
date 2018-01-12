@@ -23,7 +23,6 @@ describe('SVD tests', () => {
     ]
 
     let {u, v, q} = SVD(a)
-    console.log(q)
     assert.approximately(q[0], Math.sqrt(1248), 1e-4)
     assert.approximately(q[1], 0, 1e-4)
     assert.approximately(q[2], 20, 1e-4)
