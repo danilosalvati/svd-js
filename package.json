@@ -15,7 +15,7 @@
     "build": "npm-run-all clean build-commonjs build-es build-umd build-umd-min",
     "test": "standard src/**/*.js test/**/*.js && cross-env BABEL_ENV=commonjs nyc --reporter=html --reporter=text mocha --require babel-register ./tests/*.spec.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "update-version-file": "const-version ./package.json ./src/version.js",
+    "update-version-file": "const-version ./package.json ./version.js",
     "version": "npm run update-version-file && npm run build && npm run add-build-to-vcs",
     "add-build-to-vcs": "git add -A ./version.js && git add -A build-es && git add -A build-umd && git add -A build-commonjs"
   },
