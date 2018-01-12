@@ -5,8 +5,26 @@ import math from 'mathjs'
 import {SVD} from '../src/index'
 
 describe('SVD tests', () => {
-  it('Should return error when called without parameters', (done) => {
+  it('Should return an error when called without parameters', (done) => {
     assert.throws(() => SVD(), TypeError, 'Matrix a is not defined')
+    done()
+  })
+
+  it('Should return an error when called with m < n', (done) => {
+    let a = []
+    for (let i = 0; i < 20; i++) {
+      a[i] = new Array(21)
+      for (let j = 0; j < 21; j++) {
+        if (i > j) {
+          a[i][j] = 0
+        } else if (i === j) {
+          a[i][j] = 21 - i
+        } else {
+          a[i][j] = -1
+        }
+      }
+    }
+    assert.throws(() => SVD(a), TypeError, 'Invalid matrix: m < n')
     done()
   })
 
@@ -54,6 +72,39 @@ describe('SVD tests', () => {
     for (let i = 0; i < VtV.size()[0]; i++) {
       for (let j = 0; j < VtV.size()[1]; j++) {
         assert.approximately(VtV.get([i, j]), (i === j) ? 1 : 0, 1e-4)
+      }
+    }
+
+    done()
+  })
+
+  it('Should work with Golub and Reinsch first example without returning u and v', (done) => {
+    let a = [
+      [22, 10, 2, 3, 7],
+      [14, 7, 10, 0, 8],
+      [-1, 13, -1, -11, 3],
+      [-3, -2, 13, -2, 4],
+      [9, 8, 1, -2, 4],
+      [9, 1, -7, 5, -1],
+      [2, -6, 6, 5, 1],
+      [4, 5, 0, -2, 2]
+    ]
+
+    let {v, q} = SVD(a, false, false)
+
+    assert.approximately(q[0], Math.sqrt(1248), 1e-4)
+    assert.approximately(q[1], 0, 1e-4)
+    assert.approximately(q[2], 20, 1e-4)
+    assert.approximately(q[3], Math.sqrt(384), 1e-4)
+    assert.approximately(q[4], 0, 1e-4)
+
+    assert.strictEqual(v.length, 5)
+    assert.strictEqual(v[0].length, 5)
+
+    // Check if v is an empty matrix
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        assert.strictEqual(v[i][j], 0)
       }
     }
 
@@ -207,5 +258,4 @@ describe('SVD tests', () => {
 
     done()
   })
-
 })

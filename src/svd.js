@@ -23,8 +23,8 @@
  */
 const SVD = (a, withu, withv, eps, tol) => {
   // Define default parameters
-  withu = withu || true
-  withv = withv || true
+  withu = withu !== undefined ? withu : true
+  withv = withv !== undefined ? withv : true
   eps = eps || Math.pow(2, -52)
   tol = 1e-64 / eps
 
@@ -37,6 +37,10 @@ const SVD = (a, withu, withv, eps, tol) => {
 
   let n = a[0].length
   let m = a.length
+
+  if (m < n) {
+    throw new TypeError('Invalid matrix: m < n')
+  }
 
   let i, j, k, l, l1, c, f, g, h, s, x, y, z
 
