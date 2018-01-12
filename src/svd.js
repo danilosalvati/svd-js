@@ -301,11 +301,7 @@ const SVD = (a, withu, withv, eps, tol) => {
     if (q[i] < eps) q[i] = 0
   }
 
-  console.log('u = ', u, '\n\n')
-  console.log('v = ', v, '\n\n')
-  console.log('q = ', q, '\n\n')
-  throw new Error('Not implemented yet')
-  // return {u, q, v}
+  return {u, q, v}
 }
 
 export default SVD
