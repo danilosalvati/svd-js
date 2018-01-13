@@ -9,7 +9,7 @@ var _svd = require('./svd');
 
 var _svd2 = _interopRequireDefault(_svd);
 
-var _version = require('../version');
+var _version = require('./version');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
