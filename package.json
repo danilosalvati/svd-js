@@ -37,9 +37,9 @@
   "homepage": "https://github.com/danilosalvati/svd-js#readme",
   "devDependencies": {
     "@babel/cli": "^7.5.0",
-    "@babel/core": "^7.4.5",
+    "@babel/core": "^7.5.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.5.1",
-    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-env": "^7.5.0",
     "chai": "^4.2.0",
     "const-version": "^2.0.0",
     "coveralls": "^3.0.4",
