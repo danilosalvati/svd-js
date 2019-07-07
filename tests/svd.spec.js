@@ -1,8 +1,8 @@
 /* global describe it */
-import {assert} from 'chai'
-import math from 'mathjs'
+import { assert } from 'chai'
+import { matrix, transpose, multiply } from 'mathjs'
 
-import {SVD} from '../src/index'
+import { SVD } from '../src/index'
 
 describe('SVD tests', () => {
   it('Should return an error when called without parameters', (done) => {
@@ -40,20 +40,20 @@ describe('SVD tests', () => {
       [4, 5, 0, -2, 2]
     ]
 
-    let {u, v, q} = SVD(a)
+    let { u, v, q } = SVD(a)
     assert.approximately(q[0], Math.sqrt(1248), 1e-4)
     assert.approximately(q[1], 0, 1e-4)
     assert.approximately(q[2], 20, 1e-4)
     assert.approximately(q[3], Math.sqrt(384), 1e-4)
     assert.approximately(q[4], 0, 1e-4)
 
-    let U = math.matrix(u)
-    let V = math.matrix(v)
+    let U = matrix(u)
+    let V = matrix(v)
 
-    let Ut = math.transpose(u)
-    let Vt = math.transpose(V)
+    let Ut = transpose(u)
+    let Vt = transpose(V)
 
-    let UtU = math.multiply(Ut, U)
+    let UtU = multiply(Ut, U)
 
     assert.deepEqual(UtU.size(), [5, 5])
 
@@ -64,7 +64,7 @@ describe('SVD tests', () => {
       }
     }
 
-    let VtV = math.multiply(Vt, V)
+    let VtV = multiply(Vt, V)
 
     assert.deepEqual(VtV.size(), [5, 5])
 
@@ -90,7 +90,7 @@ describe('SVD tests', () => {
       [4, 5, 0, -2, 2]
     ]
 
-    let {v, q} = SVD(a, false, false)
+    let { v, q } = SVD(a, false, false)
 
     assert.approximately(q[0], Math.sqrt(1248), 1e-4)
     assert.approximately(q[1], 0, 1e-4)
@@ -126,7 +126,7 @@ describe('SVD tests', () => {
       }
     }
 
-    let {u, v, q} = SVD(a)
+    let { u, v, q } = SVD(a)
 
     assert.approximately(q[0], 21.45, 1e-2)
     assert.approximately(q[1], 20.45, 1e-2)
@@ -149,13 +149,13 @@ describe('SVD tests', () => {
     assert.approximately(q[18], 7.35, 1e-2)
     assert.approximately(q[19], 6.33, 1e-2)
 
-    let U = math.matrix(u)
-    let V = math.matrix(v)
+    let U = matrix(u)
+    let V = matrix(v)
 
-    let Ut = math.transpose(u)
-    let Vt = math.transpose(V)
+    let Ut = transpose(u)
+    let Vt = transpose(V)
 
-    let UtU = math.multiply(Ut, U)
+    let UtU = multiply(Ut, U)
 
     assert.deepEqual(UtU.size(), [20, 20])
 
@@ -166,7 +166,7 @@ describe('SVD tests', () => {
       }
     }
 
-    let VtV = math.multiply(Vt, V)
+    let VtV = multiply(Vt, V)
 
     assert.deepEqual(VtV.size(), [20, 20])
 
@@ -195,7 +195,7 @@ describe('SVD tests', () => {
       }
     }
 
-    let {u, v, q} = SVD(a)
+    let { u, v, q } = SVD(a)
 
     assert.approximately(q[0], 18.20, 1e-2)
     assert.approximately(q[1], 6.22, 1e-2)
@@ -228,13 +228,13 @@ describe('SVD tests', () => {
     assert.approximately(q[28], 1.50, 1e-2)
     assert.approximately(q[29], 1.50, 1e-2)
 
-    let U = math.matrix(u)
-    let V = math.matrix(v)
+    let U = matrix(u)
+    let V = matrix(v)
 
-    let Ut = math.transpose(u)
-    let Vt = math.transpose(V)
+    let Ut = transpose(u)
+    let Vt = transpose(V)
 
-    let UtU = math.multiply(Ut, U)
+    let UtU = multiply(Ut, U)
 
     assert.deepEqual(UtU.size(), [30, 30])
 
@@ -245,7 +245,7 @@ describe('SVD tests', () => {
       }
     }
 
-    let VtV = math.multiply(Vt, V)
+    let VtV = multiply(Vt, V)
 
     assert.deepEqual(VtV.size(), [30, 30])
 

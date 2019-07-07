@@ -305,7 +305,7 @@ const SVD = (a, withu, withv, eps, tol) => {
     if (q[i] < eps) q[i] = 0
   }
 
-  return {u, q, v}
+  return { u, q, v }
 }
 
 export default SVD

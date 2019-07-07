@@ -1,4 +1,4 @@
 import SVD from './svd'
-import {VERSION} from './version'
+import { VERSION } from './version'
 
-export {SVD, VERSION}
+export { SVD, VERSION }
