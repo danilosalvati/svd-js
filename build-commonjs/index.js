@@ -1,17 +1,23 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.VERSION = exports.SVD = undefined;
+Object.defineProperty(exports, "SVD", {
+  enumerable: true,
+  get: function get() {
+    return _svd["default"];
+  }
+});
+Object.defineProperty(exports, "VERSION", {
+  enumerable: true,
+  get: function get() {
+    return _version.VERSION;
+  }
+});
 
-var _svd = require('./svd');
+var _svd = _interopRequireDefault(require("./svd"));
 
-var _svd2 = _interopRequireDefault(_svd);
+var _version = require("./version");
 
-var _version = require('./version');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.SVD = _svd2.default;
-exports.VERSION = _version.VERSION;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }

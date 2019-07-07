@@ -1,434 +1,369 @@
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else if(typeof exports === 'object')
-		exports["SVDJS"] = factory();
-	else
-		root["SVDJS"] = factory();
-})(typeof self !== 'undefined' ? self : this, function() {
-return /******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
-/******/ })
-/************************************************************************/
-/******/ ([
-/* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (global = global || self, factory(global.SVDJS = {}));
+}(this, function (exports) { 'use strict';
 
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__svd__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__version__ = __webpack_require__(2);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "SVD", function() { return __WEBPACK_IMPORTED_MODULE_0__svd__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "VERSION", function() { return __WEBPACK_IMPORTED_MODULE_1__version__["a"]; });
+  /** SVD procedure as explained in "Singular Value Decomposition and Least Squares Solutions. By G.H. Golub et al."
+   *
+   * This procedure computes the singular values and complete orthogonal decomposition of a real rectangular matrix A:
+   *    A = U * diag(q) * V(t), U(t) * U = V(t) * V = I
+   * where the arrays a, u, v, q represent A, U, V, q respectively. The actual parameters corresponding to a, u, v may
+   * all be identical unless withu = withv = {true}. In this case, the actual parameters corresponding to u and v must
+   * differ. m >= n is assumed (with m = a.length and n = a[0].length)
+   *
+   *  @param a {Array} Represents the matrix A to be decomposed
+   *  @param [withu] {bool} {true} if U is desired {false} otherwise
+   *  @param [withv] {bool} {true} if U is desired {false} otherwise
+   *  @param [eps] {Number} A constant used in the test for convergence; should not be smaller than the machine precision
+   *  @param [tol] {Number} A machine dependent constant which should be set equal to B/eps0 where B is the smallest
+   *    positive number representable in the computer
+   *
+   *  @returns {Object} An object containing:
+   *    q: A vector holding the singular values of A; they are non-negative but not necessarily ordered in
+   *      decreasing sequence
+   *    u: Represents the matrix U with orthonormalized columns (if withu is {true} otherwise u is used as
+   *      a working storage)
+   *    v: Represents the orthogonal matrix V (if withv is {true}, otherwise v is not used)
+   *
+   */
+  var SVD = function SVD(a, withu, withv, eps, tol) {
+    // Define default parameters
+    withu = withu !== undefined ? withu : true;
+    withv = withv !== undefined ? withv : true;
+    eps = eps || Math.pow(2, -52);
+    tol = 1e-64 / eps; // throw error if a is not defined
+
+    if (!a) {
+      throw new TypeError('Matrix a is not defined');
+    } // Householder's reduction to bidiagonal form
 
 
+    var n = a[0].length;
+    var m = a.length;
 
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/** SVD procedure as explained in "Singular Value Decomposition and Least Squares Solutions. By G.H. Golub et al."
- *
- * This procedure computes the singular values and complete orthogonal decomposition of a real rectangular matrix A:
- *    A = U * diag(q) * V(t), U(t) * U = V(t) * V = I
- * where the arrays a, u, v, q represent A, U, V, q respectively. The actual parameters corresponding to a, u, v may
- * all be identical unless withu = withv = {true}. In this case, the actual parameters corresponding to u and v must
- * differ. m >= n is assumed (with m = a.length and n = a[0].length)
- *
- *  @param a {Array} Represents the matrix A to be decomposed
- *  @param [withu] {bool} {true} if U is desired {false} otherwise
- *  @param [withv] {bool} {true} if U is desired {false} otherwise
- *  @param [eps] {Number} A constant used in the test for convergence; should not be smaller than the machine precision
- *  @param [tol] {Number} A machine dependent constant which should be set equal to B/eps0 where B is the smallest
- *    positive number representable in the computer
- *
- *  @returns {Object} An object containing:
- *    q: A vector holding the singular values of A; they are non-negative but not necessarily ordered in
- *      decreasing sequence
- *    u: Represents the matrix U with orthonormalized columns (if withu is {true} otherwise u is used as
- *      a working storage)
- *    v: Represents the orthogonal matrix V (if withv is {true}, otherwise v is not used)
- *
- */
-var SVD = function SVD(a, withu, withv, eps, tol) {
-  // Define default parameters
-  withu = withu !== undefined ? withu : true;
-  withv = withv !== undefined ? withv : true;
-  eps = eps || Math.pow(2, -52);
-  tol = 1e-64 / eps;
-
-  // throw error if a is not defined
-  if (!a) {
-    throw new TypeError('Matrix a is not defined');
-  }
-
-  // Householder's reduction to bidiagonal form
-
-  var n = a[0].length;
-  var m = a.length;
-
-  if (m < n) {
-    throw new TypeError('Invalid matrix: m < n');
-  }
-
-  var i = void 0,
-      j = void 0,
-      k = void 0,
-      l = void 0,
-      l1 = void 0,
-      c = void 0,
-      f = void 0,
-      g = void 0,
-      h = void 0,
-      s = void 0,
-      x = void 0,
-      y = void 0,
-      z = void 0;
-
-  g = 0;
-  x = 0;
-  var e = [];
-
-  var u = [];
-  var v = [];
-  var q = void 0;
-
-  // Initialize u
-  for (i = 0; i < m; i++) {
-    u[i] = new Array(n).fill(0);
-  }
-
-  // Initialize v
-  for (i = 0; i < n; i++) {
-    v[i] = new Array(n).fill(0);
-  }
-
-  // Initialize q
-  q = new Array(n).fill(0);
-
-  // Copy array a in u
-  for (i = 0; i < m; i++) {
-    for (j = 0; j < n; j++) {
-      u[i][j] = a[i][j];
+    if (m < n) {
+      throw new TypeError('Invalid matrix: m < n');
     }
-  }
 
-  for (i = 0; i < n; i++) {
-    e[i] = g;
-    s = 0;
-    l = i + 1;
-    for (j = i; j < m; j++) {
-      s += Math.pow(u[j][i], 2);
-    }
-    if (s < tol) {
-      g = 0;
-    } else {
-      f = u[i][i];
-      g = f < 0 ? Math.sqrt(s) : -Math.sqrt(s);
-      h = f * g - s;
-      u[i][i] = f - g;
-      for (j = l; j < n; j++) {
-        s = 0;
-        for (k = i; k < m; k++) {
-          s += u[k][i] * u[k][j];
-        }
-        f = s / h;
-        for (k = i; k < m; k++) {
-          u[k][j] = u[k][j] + f * u[k][i];
-        }
+    var i, j, k, l, l1, c, f, g, h, s, x, y, z;
+    g = 0;
+    x = 0;
+    var e = [];
+    var u = [];
+    var v = [];
+    var q; // Initialize u
+
+    for (i = 0; i < m; i++) {
+      u[i] = new Array(n).fill(0);
+    } // Initialize v
+
+
+    for (i = 0; i < n; i++) {
+      v[i] = new Array(n).fill(0);
+    } // Initialize q
+
+
+    q = new Array(n).fill(0); // Copy array a in u
+
+    for (i = 0; i < m; i++) {
+      for (j = 0; j < n; j++) {
+        u[i][j] = a[i][j];
       }
     }
-    q[i] = g;
-    s = 0;
-    for (j = l; j < n; j++) {
-      s += Math.pow(u[i][j], 2);
-    }
-    if (s < tol) {
-      g = 0;
-    } else {
-      f = u[i][i + 1];
-      g = f < 0 ? Math.sqrt(s) : -Math.sqrt(s);
-      h = f * g - s;
-      u[i][i + 1] = f - g;
-      for (j = l; j < n; j++) {
-        e[j] = u[i][j] / h;
-      }
-      for (j = l; j < m; j++) {
-        s = 0;
-        for (k = l; k < n; k++) {
-          s += u[j][k] * u[i][k];
-        }
-        for (k = l; k < n; k++) {
-          u[j][k] = u[j][k] + s * e[k];
-        }
-      }
-    }
-    y = Math.abs(q[i]) + Math.abs(e[i]);
-    if (y > x) {
-      x = y;
-    }
-  }
 
-  // Accumulation of right-hand transformations
-  if (withv) {
-    for (i = n - 1; i >= 0; i--) {
-      if (g !== 0) {
-        h = u[i][i + 1] * g;
-        for (j = l; j < n; j++) {
-          v[j][i] = u[i][j] / h;
-        }
-        for (j = l; j < n; j++) {
-          s = 0;
-          for (k = l; k < n; k++) {
-            s += u[i][k] * v[k][j];
-          }
-          for (k = l; k < n; k++) {
-            v[k][j] = v[k][j] + s * v[k][i];
-          }
-        }
-      }
-      for (j = l; j < n; j++) {
-        v[i][j] = 0;
-        v[j][i] = 0;
-      }
-      v[i][i] = 1;
-      g = e[i];
-      l = i;
-    }
-  }
-
-  // Accumulation of left-hand transformations
-  if (withu) {
-    for (i = n - 1; i >= 0; i--) {
+    for (i = 0; i < n; i++) {
+      e[i] = g;
+      s = 0;
       l = i + 1;
-      g = q[i];
-      for (j = l; j < n; j++) {
-        u[i][j] = 0;
+
+      for (j = i; j < m; j++) {
+        s += Math.pow(u[j][i], 2);
       }
-      if (g !== 0) {
-        h = u[i][i] * g;
+
+      if (s < tol) {
+        g = 0;
+      } else {
+        f = u[i][i];
+        g = f < 0 ? Math.sqrt(s) : -Math.sqrt(s);
+        h = f * g - s;
+        u[i][i] = f - g;
+
         for (j = l; j < n; j++) {
           s = 0;
-          for (k = l; k < m; k++) {
+
+          for (k = i; k < m; k++) {
             s += u[k][i] * u[k][j];
           }
+
           f = s / h;
+
           for (k = i; k < m; k++) {
             u[k][j] = u[k][j] + f * u[k][i];
           }
         }
-        for (j = i; j < m; j++) {
-          u[j][i] = u[j][i] / g;
-        }
+      }
+
+      q[i] = g;
+      s = 0;
+
+      for (j = l; j < n; j++) {
+        s += Math.pow(u[i][j], 2);
+      }
+
+      if (s < tol) {
+        g = 0;
       } else {
-        for (j = i; j < m; j++) {
-          u[j][i] = 0;
-        }
-      }
-      u[i][i] = u[i][i] + 1;
-    }
-  }
+        f = u[i][i + 1];
+        g = f < 0 ? Math.sqrt(s) : -Math.sqrt(s);
+        h = f * g - s;
+        u[i][i + 1] = f - g;
 
-  // Diagonalization of the bidiagonal form
-  eps = eps * x;
-  var testConvergence = void 0;
-  for (k = n - 1; k >= 0; k--) {
-    for (var iteration = 0; iteration < 50; iteration++) {
-      // test-f-splitting
-      testConvergence = false;
-      for (l = k; l >= 0; l--) {
-        if (Math.abs(e[l]) <= eps) {
-          testConvergence = true;
-          break;
+        for (j = l; j < n; j++) {
+          e[j] = u[i][j] / h;
         }
-        if (Math.abs(q[l - 1]) <= eps) {
-          break;
-        }
-      }
 
-      if (!testConvergence) {
-        // cancellation of e[l] if l>0
-        c = 0;
-        s = 1;
-        l1 = l - 1;
-        for (i = l; i < k + 1; i++) {
-          f = s * e[i];
-          e[i] = c * e[i];
-          if (Math.abs(f) <= eps) {
-            break; // goto test-f-convergence
+        for (j = l; j < m; j++) {
+          s = 0;
+
+          for (k = l; k < n; k++) {
+            s += u[j][k] * u[i][k];
           }
-          g = q[i];
-          q[i] = Math.sqrt(f * f + g * g);
-          h = q[i];
-          c = g / h;
-          s = -f / h;
+
+          for (k = l; k < n; k++) {
+            u[j][k] = u[j][k] + s * e[k];
+          }
+        }
+      }
+
+      y = Math.abs(q[i]) + Math.abs(e[i]);
+
+      if (y > x) {
+        x = y;
+      }
+    } // Accumulation of right-hand transformations
+
+
+    if (withv) {
+      for (i = n - 1; i >= 0; i--) {
+        if (g !== 0) {
+          h = u[i][i + 1] * g;
+
+          for (j = l; j < n; j++) {
+            v[j][i] = u[i][j] / h;
+          }
+
+          for (j = l; j < n; j++) {
+            s = 0;
+
+            for (k = l; k < n; k++) {
+              s += u[i][k] * v[k][j];
+            }
+
+            for (k = l; k < n; k++) {
+              v[k][j] = v[k][j] + s * v[k][i];
+            }
+          }
+        }
+
+        for (j = l; j < n; j++) {
+          v[i][j] = 0;
+          v[j][i] = 0;
+        }
+
+        v[i][i] = 1;
+        g = e[i];
+        l = i;
+      }
+    } // Accumulation of left-hand transformations
+
+
+    if (withu) {
+      for (i = n - 1; i >= 0; i--) {
+        l = i + 1;
+        g = q[i];
+
+        for (j = l; j < n; j++) {
+          u[i][j] = 0;
+        }
+
+        if (g !== 0) {
+          h = u[i][i] * g;
+
+          for (j = l; j < n; j++) {
+            s = 0;
+
+            for (k = l; k < m; k++) {
+              s += u[k][i] * u[k][j];
+            }
+
+            f = s / h;
+
+            for (k = i; k < m; k++) {
+              u[k][j] = u[k][j] + f * u[k][i];
+            }
+          }
+
+          for (j = i; j < m; j++) {
+            u[j][i] = u[j][i] / g;
+          }
+        } else {
+          for (j = i; j < m; j++) {
+            u[j][i] = 0;
+          }
+        }
+
+        u[i][i] = u[i][i] + 1;
+      }
+    } // Diagonalization of the bidiagonal form
+
+
+    eps = eps * x;
+    var testConvergence;
+
+    for (k = n - 1; k >= 0; k--) {
+      for (var iteration = 0; iteration < 50; iteration++) {
+        // test-f-splitting
+        testConvergence = false;
+
+        for (l = k; l >= 0; l--) {
+          if (Math.abs(e[l]) <= eps) {
+            testConvergence = true;
+            break;
+          }
+
+          if (Math.abs(q[l - 1]) <= eps) {
+            break;
+          }
+        }
+
+        if (!testConvergence) {
+          // cancellation of e[l] if l>0
+          c = 0;
+          s = 1;
+          l1 = l - 1;
+
+          for (i = l; i < k + 1; i++) {
+            f = s * e[i];
+            e[i] = c * e[i];
+
+            if (Math.abs(f) <= eps) {
+              break; // goto test-f-convergence
+            }
+
+            g = q[i];
+            q[i] = Math.sqrt(f * f + g * g);
+            h = q[i];
+            c = g / h;
+            s = -f / h;
+
+            if (withu) {
+              for (j = 0; j < m; j++) {
+                y = u[j][l1];
+                z = u[j][i];
+                u[j][l1] = y * c + z * s;
+                u[j][i] = -y * s + z * c;
+              }
+            }
+          }
+        } // test f convergence
+
+
+        z = q[k];
+
+        if (l === k) {
+          // convergence
+          if (z < 0) {
+            // q[k] is made non-negative
+            q[k] = -z;
+
+            if (withv) {
+              for (j = 0; j < n; j++) {
+                v[j][k] = -v[j][k];
+              }
+            }
+          }
+
+          break; // break out of iteration loop and move on to next k value
+        } // Shift from bottom 2x2 minor
+
+
+        x = q[l];
+        y = q[k - 1];
+        g = e[k - 1];
+        h = e[k];
+        f = ((y - z) * (y + z) + (g - h) * (g + h)) / (2 * h * y);
+        g = Math.sqrt(f * f + 1);
+        f = ((x - z) * (x + z) + h * (y / (f < 0 ? f - g : f + g) - h)) / x; // Next QR transformation
+
+        c = 1;
+        s = 1;
+
+        for (i = l + 1; i < k + 1; i++) {
+          g = e[i];
+          y = q[i];
+          h = s * g;
+          g = c * g;
+          z = Math.sqrt(f * f + h * h);
+          e[i - 1] = z;
+          c = f / z;
+          s = h / z;
+          f = x * c + g * s;
+          g = -x * s + g * c;
+          h = y * s;
+          y = y * c;
+
+          if (withv) {
+            for (j = 0; j < n; j++) {
+              x = v[j][i - 1];
+              z = v[j][i];
+              v[j][i - 1] = x * c + z * s;
+              v[j][i] = -x * s + z * c;
+            }
+          }
+
+          z = Math.sqrt(f * f + h * h);
+          q[i - 1] = z;
+          c = f / z;
+          s = h / z;
+          f = c * g + s * y;
+          x = -s * g + c * y;
+
           if (withu) {
             for (j = 0; j < m; j++) {
-              y = u[j][l1];
+              y = u[j][i - 1];
               z = u[j][i];
-              u[j][l1] = y * c + z * s;
+              u[j][i - 1] = y * c + z * s;
               u[j][i] = -y * s + z * c;
             }
           }
         }
-      }
 
-      // test f convergence
-      z = q[k];
-      if (l === k) {
-        // convergence
-        if (z < 0) {
-          // q[k] is made non-negative
-          q[k] = -z;
-          if (withv) {
-            for (j = 0; j < n; j++) {
-              v[j][k] = -v[j][k];
-            }
-          }
-        }
-        break; // break out of iteration loop and move on to next k value
+        e[l] = 0;
+        e[k] = f;
+        q[k] = x;
       }
+    } // Number below eps should be zero
 
-      // Shift from bottom 2x2 minor
-      x = q[l];
-      y = q[k - 1];
-      g = e[k - 1];
-      h = e[k];
-      f = ((y - z) * (y + z) + (g - h) * (g + h)) / (2 * h * y);
-      g = Math.sqrt(f * f + 1);
-      f = ((x - z) * (x + z) + h * (y / (f < 0 ? f - g : f + g) - h)) / x;
 
-      // Next QR transformation
-      c = 1;
-      s = 1;
-      for (i = l + 1; i < k + 1; i++) {
-        g = e[i];
-        y = q[i];
-        h = s * g;
-        g = c * g;
-        z = Math.sqrt(f * f + h * h);
-        e[i - 1] = z;
-        c = f / z;
-        s = h / z;
-        f = x * c + g * s;
-        g = -x * s + g * c;
-        h = y * s;
-        y = y * c;
-        if (withv) {
-          for (j = 0; j < n; j++) {
-            x = v[j][i - 1];
-            z = v[j][i];
-            v[j][i - 1] = x * c + z * s;
-            v[j][i] = -x * s + z * c;
-          }
-        }
-        z = Math.sqrt(f * f + h * h);
-        q[i - 1] = z;
-        c = f / z;
-        s = h / z;
-        f = c * g + s * y;
-        x = -s * g + c * y;
-        if (withu) {
-          for (j = 0; j < m; j++) {
-            y = u[j][i - 1];
-            z = u[j][i];
-            u[j][i - 1] = y * c + z * s;
-            u[j][i] = -y * s + z * c;
-          }
-        }
-      }
-      e[l] = 0;
-      e[k] = f;
-      q[k] = x;
+    for (i = 0; i < n; i++) {
+      if (q[i] < eps) q[i] = 0;
     }
-  }
 
-  // Number below eps should be zero
-  for (i = 0; i < n; i++) {
-    if (q[i] < eps) q[i] = 0;
-  }
+    return {
+      u: u,
+      q: q,
+      v: v
+    };
+  };
 
-  return { u: u, q: q, v: v };
-};
+  // THIS IS AN AUTOGENERATED FILE. DO NOT EDIT THIS FILE DIRECTLY.
+  var VERSION = '1.0.1';
 
-/* harmony default export */ __webpack_exports__["a"] = (SVD);
+  exports.SVD = SVD;
+  exports.VERSION = VERSION;
 
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+  Object.defineProperty(exports, '__esModule', { value: true });
 
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return VERSION; });
-// THIS IS AN AUTOGENERATED FILE. DO NOT EDIT THIS FILE DIRECTLY.
-var VERSION = '1.0.1';
-
-/***/ })
-/******/ ]);
-});
+}));
 //# sourceMappingURL=svd-js.js.map

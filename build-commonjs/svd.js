@@ -1,8 +1,10 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports["default"] = void 0;
+
 /** SVD procedure as explained in "Singular Value Decomposition and Least Squares Solutions. By G.H. Golub et al."
  *
  * This procedure computes the singular values and complete orthogonal decomposition of a real rectangular matrix A:
@@ -31,14 +33,12 @@ var SVD = function SVD(a, withu, withv, eps, tol) {
   withu = withu !== undefined ? withu : true;
   withv = withv !== undefined ? withv : true;
   eps = eps || Math.pow(2, -52);
-  tol = 1e-64 / eps;
+  tol = 1e-64 / eps; // throw error if a is not defined
 
-  // throw error if a is not defined
   if (!a) {
     throw new TypeError('Matrix a is not defined');
-  }
+  } // Householder's reduction to bidiagonal form
 
-  // Householder's reduction to bidiagonal form
 
   var n = a[0].length;
   var m = a.length;
@@ -47,42 +47,26 @@ var SVD = function SVD(a, withu, withv, eps, tol) {
     throw new TypeError('Invalid matrix: m < n');
   }
 
-  var i = void 0,
-      j = void 0,
-      k = void 0,
-      l = void 0,
-      l1 = void 0,
-      c = void 0,
-      f = void 0,
-      g = void 0,
-      h = void 0,
-      s = void 0,
-      x = void 0,
-      y = void 0,
-      z = void 0;
-
+  var i, j, k, l, l1, c, f, g, h, s, x, y, z;
   g = 0;
   x = 0;
   var e = [];
-
   var u = [];
   var v = [];
-  var q = void 0;
+  var q; // Initialize u
 
-  // Initialize u
   for (i = 0; i < m; i++) {
     u[i] = new Array(n).fill(0);
-  }
+  } // Initialize v
 
-  // Initialize v
+
   for (i = 0; i < n; i++) {
     v[i] = new Array(n).fill(0);
-  }
+  } // Initialize q
 
-  // Initialize q
-  q = new Array(n).fill(0);
 
-  // Copy array a in u
+  q = new Array(n).fill(0); // Copy array a in u
+
   for (i = 0; i < m; i++) {
     for (j = 0; j < n; j++) {
       u[i][j] = a[i][j];
@@ -93,9 +77,11 @@ var SVD = function SVD(a, withu, withv, eps, tol) {
     e[i] = g;
     s = 0;
     l = i + 1;
+
     for (j = i; j < m; j++) {
       s += Math.pow(u[j][i], 2);
     }
+
     if (s < tol) {
       g = 0;
     } else {
@@ -103,22 +89,29 @@ var SVD = function SVD(a, withu, withv, eps, tol) {
       g = f < 0 ? Math.sqrt(s) : -Math.sqrt(s);
       h = f * g - s;
       u[i][i] = f - g;
+
       for (j = l; j < n; j++) {
         s = 0;
+
         for (k = i; k < m; k++) {
           s += u[k][i] * u[k][j];
         }
+
         f = s / h;
+
         for (k = i; k < m; k++) {
           u[k][j] = u[k][j] + f * u[k][i];
         }
       }
     }
+
     q[i] = g;
     s = 0;
+
     for (j = l; j < n; j++) {
       s += Math.pow(u[i][j], 2);
     }
+
     if (s < tol) {
       g = 0;
     } else {
@@ -126,73 +119,92 @@ var SVD = function SVD(a, withu, withv, eps, tol) {
       g = f < 0 ? Math.sqrt(s) : -Math.sqrt(s);
       h = f * g - s;
       u[i][i + 1] = f - g;
+
       for (j = l; j < n; j++) {
         e[j] = u[i][j] / h;
       }
+
       for (j = l; j < m; j++) {
         s = 0;
+
         for (k = l; k < n; k++) {
           s += u[j][k] * u[i][k];
         }
+
         for (k = l; k < n; k++) {
           u[j][k] = u[j][k] + s * e[k];
         }
       }
     }
+
     y = Math.abs(q[i]) + Math.abs(e[i]);
+
     if (y > x) {
       x = y;
     }
-  }
+  } // Accumulation of right-hand transformations
 
-  // Accumulation of right-hand transformations
+
   if (withv) {
     for (i = n - 1; i >= 0; i--) {
       if (g !== 0) {
         h = u[i][i + 1] * g;
+
         for (j = l; j < n; j++) {
           v[j][i] = u[i][j] / h;
         }
+
         for (j = l; j < n; j++) {
           s = 0;
+
           for (k = l; k < n; k++) {
             s += u[i][k] * v[k][j];
           }
+
           for (k = l; k < n; k++) {
             v[k][j] = v[k][j] + s * v[k][i];
           }
         }
       }
+
       for (j = l; j < n; j++) {
         v[i][j] = 0;
         v[j][i] = 0;
       }
+
       v[i][i] = 1;
       g = e[i];
       l = i;
     }
-  }
+  } // Accumulation of left-hand transformations
 
-  // Accumulation of left-hand transformations
+
   if (withu) {
     for (i = n - 1; i >= 0; i--) {
       l = i + 1;
       g = q[i];
+
       for (j = l; j < n; j++) {
         u[i][j] = 0;
       }
+
       if (g !== 0) {
         h = u[i][i] * g;
+
         for (j = l; j < n; j++) {
           s = 0;
+
           for (k = l; k < m; k++) {
             s += u[k][i] * u[k][j];
           }
+
           f = s / h;
+
           for (k = i; k < m; k++) {
             u[k][j] = u[k][j] + f * u[k][i];
           }
         }
+
         for (j = i; j < m; j++) {
           u[j][i] = u[j][i] / g;
         }
@@ -201,22 +213,26 @@ var SVD = function SVD(a, withu, withv, eps, tol) {
           u[j][i] = 0;
         }
       }
+
       u[i][i] = u[i][i] + 1;
     }
-  }
+  } // Diagonalization of the bidiagonal form
 
-  // Diagonalization of the bidiagonal form
+
   eps = eps * x;
-  var testConvergence = void 0;
+  var testConvergence;
+
   for (k = n - 1; k >= 0; k--) {
     for (var iteration = 0; iteration < 50; iteration++) {
       // test-f-splitting
       testConvergence = false;
+
       for (l = k; l >= 0; l--) {
         if (Math.abs(e[l]) <= eps) {
           testConvergence = true;
           break;
         }
+
         if (Math.abs(q[l - 1]) <= eps) {
           break;
         }
@@ -227,17 +243,21 @@ var SVD = function SVD(a, withu, withv, eps, tol) {
         c = 0;
         s = 1;
         l1 = l - 1;
+
         for (i = l; i < k + 1; i++) {
           f = s * e[i];
           e[i] = c * e[i];
+
           if (Math.abs(f) <= eps) {
             break; // goto test-f-convergence
           }
+
           g = q[i];
           q[i] = Math.sqrt(f * f + g * g);
           h = q[i];
           c = g / h;
           s = -f / h;
+
           if (withu) {
             for (j = 0; j < m; j++) {
               y = u[j][l1];
@@ -247,36 +267,39 @@ var SVD = function SVD(a, withu, withv, eps, tol) {
             }
           }
         }
-      }
+      } // test f convergence
 
-      // test f convergence
+
       z = q[k];
+
       if (l === k) {
         // convergence
         if (z < 0) {
           // q[k] is made non-negative
           q[k] = -z;
+
           if (withv) {
             for (j = 0; j < n; j++) {
               v[j][k] = -v[j][k];
             }
           }
         }
-        break; // break out of iteration loop and move on to next k value
-      }
 
-      // Shift from bottom 2x2 minor
+        break; // break out of iteration loop and move on to next k value
+      } // Shift from bottom 2x2 minor
+
+
       x = q[l];
       y = q[k - 1];
       g = e[k - 1];
       h = e[k];
       f = ((y - z) * (y + z) + (g - h) * (g + h)) / (2 * h * y);
       g = Math.sqrt(f * f + 1);
-      f = ((x - z) * (x + z) + h * (y / (f < 0 ? f - g : f + g) - h)) / x;
+      f = ((x - z) * (x + z) + h * (y / (f < 0 ? f - g : f + g) - h)) / x; // Next QR transformation
 
-      // Next QR transformation
       c = 1;
       s = 1;
+
       for (i = l + 1; i < k + 1; i++) {
         g = e[i];
         y = q[i];
@@ -290,6 +313,7 @@ var SVD = function SVD(a, withu, withv, eps, tol) {
         g = -x * s + g * c;
         h = y * s;
         y = y * c;
+
         if (withv) {
           for (j = 0; j < n; j++) {
             x = v[j][i - 1];
@@ -298,12 +322,14 @@ var SVD = function SVD(a, withu, withv, eps, tol) {
             v[j][i] = -x * s + z * c;
           }
         }
+
         z = Math.sqrt(f * f + h * h);
         q[i - 1] = z;
         c = f / z;
         s = h / z;
         f = c * g + s * y;
         x = -s * g + c * y;
+
         if (withu) {
           for (j = 0; j < m; j++) {
             y = u[j][i - 1];
@@ -313,18 +339,24 @@ var SVD = function SVD(a, withu, withv, eps, tol) {
           }
         }
       }
+
       e[l] = 0;
       e[k] = f;
       q[k] = x;
     }
-  }
+  } // Number below eps should be zero
 
-  // Number below eps should be zero
+
   for (i = 0; i < n; i++) {
     if (q[i] < eps) q[i] = 0;
   }
 
-  return { u: u, q: q, v: v };
+  return {
+    u: u,
+    q: q,
+    v: v
+  };
 };
 
-exports.default = SVD;
+var _default = SVD;
+exports["default"] = _default;
