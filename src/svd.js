@@ -35,8 +35,8 @@ const SVD = (a, withu, withv, eps, tol) => {
 
   // Householder's reduction to bidiagonal form
 
-  let n = a[0].length
-  let m = a.length
+  const n = a[0].length
+  const m = a.length
 
   if (m < n) {
     throw new TypeError('Invalid matrix: m < n')
@@ -46,11 +46,10 @@ const SVD = (a, withu, withv, eps, tol) => {
 
   g = 0
   x = 0
-  let e = []
+  const e = []
 
-  let u = []
-  let v = []
-  let q
+  const u = []
+  const v = []
 
   // Initialize u
   for (i = 0; i < m; i++) {
@@ -63,7 +62,7 @@ const SVD = (a, withu, withv, eps, tol) => {
   }
 
   // Initialize q
-  q = new Array(n).fill(0)
+  const q = new Array(n).fill(0)
 
   // Copy array a in u
   for (i = 0; i < m; i++) {
