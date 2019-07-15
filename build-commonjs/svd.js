@@ -52,8 +52,7 @@ var SVD = function SVD(a, withu, withv, eps, tol) {
   x = 0;
   var e = [];
   var u = [];
-  var v = [];
-  var q; // Initialize u
+  var v = []; // Initialize u
 
   for (i = 0; i < m; i++) {
     u[i] = new Array(n).fill(0);
@@ -65,7 +64,7 @@ var SVD = function SVD(a, withu, withv, eps, tol) {
   } // Initialize q
 
 
-  q = new Array(n).fill(0); // Copy array a in u
+  var q = new Array(n).fill(0); // Copy array a in u
 
   for (i = 0; i < m; i++) {
     for (j = 0; j < n; j++) {

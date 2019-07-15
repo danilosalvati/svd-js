@@ -1,6 +1,6 @@
 {
   "name": "svd-js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A package for the computation of Singular Value Decomposition",
   "main": "./build-commonjs/index.js",
   "module": "./build-es/index.js",
@@ -17,7 +17,7 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "update-version-file": "const-version ./package.json ./src/version.js && standard --fix ./src/version.js",
     "version": "npm run update-version-file && npm run build && npm run add-build-to-vcs",
-    "add-build-to-vcs": "git add -A ./version.js && git add -A build-es && git add -A build-umd && git add -A build-commonjs"
+    "add-build-to-vcs": "git add -A ./src/version.js && git add -A build-es && git add -A build-umd && git add -A build-commonjs"
   },
   "repository": {
     "type": "git",
