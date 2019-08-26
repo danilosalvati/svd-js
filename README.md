@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/danilosalvati/svd-js.svg?branch=master)](https://travis-ci.org/danilosalvati/svd-js)
 [![Coverage Status](https://coveralls.io/repos/github/danilosalvati/svd-js/badge.svg?branch=master)](https://coveralls.io/github/danilosalvati/svd-js?branch=master)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![npm](https://img.shields.io/npm/v/svd-js)](https://www.npmjs.com/package/svd-js)
 
 A simple library to compute [*Singular Value Decomposition*](https://en.wikipedia.org/wiki/Singular_value_decomposition)
 as explained in ["Singular Value Decomposition and Least Squares Solutions. By G.H. Golub et al."](https://dl.acm.org/citation.cfm?id=2718152)
