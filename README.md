@@ -58,26 +58,27 @@ console.log(q)
 ```
 
 ###### umd package
+Golub and Reinsch first example
 
 ```html
 <html>
  <script src="https://unpkg.com/svd-js" type="application/javascript"></script>
-<script>
-  let a = [
-    [22, 10, 2, 3, 7],
-    [14, 7, 10, 0, 8],
-    [-1, 13, -1, -11, 3],
-    [-3, -2, 13, -2, 4],
-    [9, 8, 1, -2, 4],
-    [9, 1, -7, 5, -1],
-    [2, -6, 6, 5, 1],
-    [4, 5, 0, -2, 2]
-  ]
+ <script>
+   let a = [
+     [22, 10, 2, 3, 7],
+     [14, 7, 10, 0, 8],
+     [-1, 13, -1, -11, 3],
+     [-3, -2, 13, -2, 4],
+     [9, 8, 1, -2, 4],
+     [9, 1, -7, 5, -1],
+     [2, -6, 6, 5, 1],
+     [4, 5, 0, -2, 2]
+   ]
 
-  let { u, v, q } = SVDJS.SVD(a)
-  console.log(u)
-  console.log(v)
-  console.log(q)
-</script>
+   let { u, v, q } = SVDJS.SVD(a)
+   console.log(u)
+   console.log(v)
+   console.log(q)
+ </script>
 </html>
 ```
