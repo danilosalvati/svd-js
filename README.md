@@ -23,7 +23,7 @@ differ. `m >= n` is assumed (with `m = a.length` and `n = a[0].length`).
 The following is the description of all parameters:
  *   `a` {Array}: Represents the matrix **A** to be decomposed
  *   `withu` (*Optional default is true*) {bool}: `true` if **U** is desired `false` otherwise
- *   `withv` (*Optional default is true*) {bool}: `true` if **U** is desired `false` otherwise
+ *   `withv` (*Optional default is true*) {bool}: `true` if **V** is desired `false` otherwise
  *   `eps` (*Optional*) {Number}: A constant used in the test for convergence; should not be smaller
   than the machine precision
  *   `tol` (*Optional*) {Number}: A machine dependent constant which should be set equal 
