@@ -11,7 +11,7 @@ describe('SVD tests', () => {
   })
 
   it('Should return an error when called with m < n', (done) => {
-    let a = []
+    const a = []
     for (let i = 0; i < 20; i++) {
       a[i] = new Array(21)
       for (let j = 0; j < 21; j++) {
@@ -29,7 +29,7 @@ describe('SVD tests', () => {
   })
 
   it('Should work with Golub and Reinsch first example', (done) => {
-    let a = [
+    const a = [
       [22, 10, 2, 3, 7],
       [14, 7, 10, 0, 8],
       [-1, 13, -1, -11, 3],
@@ -40,20 +40,20 @@ describe('SVD tests', () => {
       [4, 5, 0, -2, 2]
     ]
 
-    let { u, v, q } = SVD(a)
+    const { u, v, q } = SVD(a)
     assert.approximately(q[0], Math.sqrt(1248), 1e-4)
     assert.approximately(q[1], 0, 1e-4)
     assert.approximately(q[2], 20, 1e-4)
     assert.approximately(q[3], Math.sqrt(384), 1e-4)
     assert.approximately(q[4], 0, 1e-4)
 
-    let U = matrix(u)
-    let V = matrix(v)
+    const U = matrix(u)
+    const V = matrix(v)
 
-    let Ut = transpose(u)
-    let Vt = transpose(V)
+    const Ut = transpose(u)
+    const Vt = transpose(V)
 
-    let UtU = multiply(Ut, U)
+    const UtU = multiply(Ut, U)
 
     assert.deepEqual(UtU.size(), [5, 5])
 
@@ -64,7 +64,7 @@ describe('SVD tests', () => {
       }
     }
 
-    let VtV = multiply(Vt, V)
+    const VtV = multiply(Vt, V)
 
     assert.deepEqual(VtV.size(), [5, 5])
 
@@ -79,7 +79,7 @@ describe('SVD tests', () => {
   })
 
   it('Should work with Golub and Reinsch first example without returning u and v', (done) => {
-    let a = [
+    const a = [
       [22, 10, 2, 3, 7],
       [14, 7, 10, 0, 8],
       [-1, 13, -1, -11, 3],
@@ -90,7 +90,7 @@ describe('SVD tests', () => {
       [4, 5, 0, -2, 2]
     ]
 
-    let { v, q } = SVD(a, false, false)
+    const { v, q } = SVD(a, false, false)
 
     assert.approximately(q[0], Math.sqrt(1248), 1e-4)
     assert.approximately(q[1], 0, 1e-4)
@@ -112,7 +112,7 @@ describe('SVD tests', () => {
   })
 
   it('Should work with Golub and Reinsch second example', (done) => {
-    let a = []
+    const a = []
     for (let i = 0; i < 21; i++) {
       a[i] = new Array(20)
       for (let j = 0; j < 20; j++) {
@@ -126,7 +126,7 @@ describe('SVD tests', () => {
       }
     }
 
-    let { u, v, q } = SVD(a)
+    const { u, v, q } = SVD(a)
 
     assert.approximately(q[0], 21.45, 1e-2)
     assert.approximately(q[1], 20.45, 1e-2)
@@ -149,13 +149,13 @@ describe('SVD tests', () => {
     assert.approximately(q[18], 7.35, 1e-2)
     assert.approximately(q[19], 6.33, 1e-2)
 
-    let U = matrix(u)
-    let V = matrix(v)
+    const U = matrix(u)
+    const V = matrix(v)
 
-    let Ut = transpose(u)
-    let Vt = transpose(V)
+    const Ut = transpose(u)
+    const Vt = transpose(V)
 
-    let UtU = multiply(Ut, U)
+    const UtU = multiply(Ut, U)
 
     assert.deepEqual(UtU.size(), [20, 20])
 
@@ -166,7 +166,7 @@ describe('SVD tests', () => {
       }
     }
 
-    let VtV = multiply(Vt, V)
+    const VtV = multiply(Vt, V)
 
     assert.deepEqual(VtV.size(), [20, 20])
 
@@ -181,7 +181,7 @@ describe('SVD tests', () => {
   })
 
   it('Should work with Golub and Reinsch third example', (done) => {
-    let a = []
+    const a = []
     for (let i = 0; i < 30; i++) {
       a[i] = new Array(30)
       for (let j = 0; j < 30; j++) {
@@ -195,7 +195,7 @@ describe('SVD tests', () => {
       }
     }
 
-    let { u, v, q } = SVD(a)
+    const { u, v, q } = SVD(a)
 
     assert.approximately(q[0], 18.20, 1e-2)
     assert.approximately(q[1], 6.22, 1e-2)
@@ -228,13 +228,13 @@ describe('SVD tests', () => {
     assert.approximately(q[28], 1.50, 1e-2)
     assert.approximately(q[29], 1.50, 1e-2)
 
-    let U = matrix(u)
-    let V = matrix(v)
+    const U = matrix(u)
+    const V = matrix(v)
 
-    let Ut = transpose(u)
-    let Vt = transpose(V)
+    const Ut = transpose(u)
+    const Vt = transpose(V)
 
-    let UtU = multiply(Ut, U)
+    const UtU = multiply(Ut, U)
 
     assert.deepEqual(UtU.size(), [30, 30])
 
@@ -245,7 +245,7 @@ describe('SVD tests', () => {
       }
     }
 
-    let VtV = multiply(Vt, V)
+    const VtV = multiply(Vt, V)
 
     assert.deepEqual(VtV.size(), [30, 30])
 
