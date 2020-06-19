@@ -27,5 +27,5 @@
   Extension of withu='f' by kchinzei 2020/06/19
  */
 declare module 'svd-js' {
-  export function SVD(a: number[][], withu?: boolean|string, withv?: boolean, eps?: number, tol?: number): {q: number[]; u: number[][]; v: number[][]};
+  export function SVD(a: number[][], withu?: boolean|'f', withv?: boolean, eps?: number, tol?: number): {q: number[]; u: number[][]; v: number[][]};
 }
