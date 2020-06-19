@@ -21,7 +21,7 @@
  *    v: Represents the orthogonal matrix V (if withv is {true}, otherwise v is not used)
  *
  */
-const SVD = (a, withu, withv, eps, tol, full) => {
+const SVD = (a, withu, withv, eps, tol) => {
   // Define default parameters
   withu = withu !== undefined ? withu : true
   withv = withv !== undefined ? withv : true

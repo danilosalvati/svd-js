@@ -28,7 +28,7 @@ exports["default"] = void 0;
  *    v: Represents the orthogonal matrix V (if withv is {true}, otherwise v is not used)
  *
  */
-var SVD = function SVD(a, withu, withv, eps, tol, full) {
+var SVD = function SVD(a, withu, withv, eps, tol) {
   // Define default parameters
   withu = withu !== undefined ? withu : true;
   withv = withv !== undefined ? withv : true;
