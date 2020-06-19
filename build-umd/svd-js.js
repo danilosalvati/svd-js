@@ -27,7 +27,7 @@
    *    v: Represents the orthogonal matrix V (if withv is {true}, otherwise v is not used)
    *
    */
-  var SVD = function SVD(a, withu, withv, eps, tol) {
+  var SVD = function SVD(a, withu, withv, eps, tol, full) {
     // Define default parameters
     withu = withu !== undefined ? withu : true;
     withv = withv !== undefined ? withv : true;
@@ -51,10 +51,11 @@
     x = 0;
     var e = [];
     var u = [];
-    var v = []; // Initialize u
+    var v = [];
+    var mOrN = withu === 'f' ? m : n; // Initialize u
 
     for (i = 0; i < m; i++) {
-      u[i] = new Array(n).fill(0);
+      u[i] = new Array(mOrN).fill(0);
     } // Initialize v
 
 
@@ -178,18 +179,28 @@
 
 
     if (withu) {
+      if (withu === 'f') {
+        for (i = n; i < m; i++) {
+          for (j = n; j < m; j++) {
+            u[i][j] = 0;
+          }
+
+          u[i][i] = 1;
+        }
+      }
+
       for (i = n - 1; i >= 0; i--) {
         l = i + 1;
         g = q[i];
 
-        for (j = l; j < n; j++) {
+        for (j = l; j < mOrN; j++) {
           u[i][j] = 0;
         }
 
         if (g !== 0) {
           h = u[i][i] * g;
 
-          for (j = l; j < n; j++) {
+          for (j = l; j < mOrN; j++) {
             s = 0;
 
             for (k = l; k < m; k++) {

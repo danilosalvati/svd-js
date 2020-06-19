@@ -36,6 +36,10 @@ The function returns an object with the following values:
     otherwise `u` is used as a working storage)
  * `v`: Represents the orthogonal matrix **V** (if `withv` is `true`, otherwise `v` is not used)
 
+If 'f' is given to `withu`, it computes 'full' `u` with `m*m` dimension.
+It is an extension in (i) of '5. Organization and Notation Details' in [Golub et al."](https://dl.acm.org/citation.cfm?id=2718152)
+The extension part of `u` (`u[n]` to `u[m-1]`) are orthonormal bases of `a` that correspond to null singular values, or the nullspace of `a^T`.
+
 ###### npm package
 Golub and Reinsch first example
 ```javascript
