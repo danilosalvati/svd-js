@@ -52,6 +52,7 @@ const SVD = (a, withu, withv, eps, tol) => {
   const v = []
 
   const mOrN = (withu === 'f') ? m : n
+
   // Initialize u
   for (i = 0; i < m; i++) {
     u[i] = new Array(mOrN).fill(0)
