@@ -111,6 +111,54 @@ describe('SVD tests', () => {
     done()
   })
 
+  it('Should work with Golub and Reinsch first example returning full U with withu=\'f\' option.', (done) => {
+    const a = [
+      [22, 10, 2, 3, 7],
+      [14, 7, 10, 0, 8],
+      [-1, 13, -1, -11, 3],
+      [-3, -2, 13, -2, 4],
+      [9, 8, 1, -2, 4],
+      [9, 1, -7, 5, -1],
+      [2, -6, 6, 5, 1],
+      [4, 5, 0, -2, 2]
+    ]
+
+    const { u, v, q } = SVD(a, 'f')
+
+    assert.strictEqual(u.length, 8)
+    assert.strictEqual(u[0].length, 8)
+
+    const U = matrix(u)
+    const V = matrix(v)
+
+    const Ut = transpose(u)
+    const Vt = transpose(V)
+
+    const UtU = multiply(Ut, U)
+
+    assert.deepEqual(UtU.size(), [8, 8])
+
+    // Check if it is an identity matrix
+    for (let i = 0; i < UtU.size()[0]; i++) {
+      for (let j = 0; j < UtU.size()[1]; j++) {
+        assert.approximately(UtU.get([i, j]), (i === j) ? 1 : 0, 1e-4)
+      }
+    }
+
+    const VtV = multiply(Vt, V)
+
+    assert.deepEqual(VtV.size(), [5, 5])
+
+    // Check if it is an identity matrix
+    for (let i = 0; i < VtV.size()[0]; i++) {
+      for (let j = 0; j < VtV.size()[1]; j++) {
+        assert.approximately(VtV.get([i, j]), (i === j) ? 1 : 0, 1e-4)
+      }
+    }
+
+    done()
+  })
+
   it('Should work with Golub and Reinsch second example', (done) => {
     const a = []
     for (let i = 0; i < 21; i++) {

@@ -6,6 +6,7 @@
   "module": "./build-es/index.js",
   "browser": "./build-umd/svd-js.min.js",
   "jsnext:main": "./build-es/index.js",
+  "types": "./declarations/svd-js.d.ts",
   "scripts": {
     "build-commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir build-commonjs",
     "build-es": "cross-env BABEL_ENV=es babel src --out-dir build-es",
