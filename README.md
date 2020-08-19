@@ -12,27 +12,27 @@ as explained in ["Singular Value Decomposition and Least Squares Solutions. By G
 
 `SVD(a, withu, withv, eps, tol) => { u, v, q }`
 
-computes the singular values and complete orthogonal decomposition of a real rectangular matrix 
+computes the singular values and complete orthogonal decomposition of a real rectangular matrix
 
 ```
 A: A = U * diag(q) * V(t), U(t) * U = V(t) * V = I
 ```
-The actual parameters corresponding to **A**, **U**, **V** may all be identical unless 
+The actual parameters corresponding to **A**, **U**, **V** may all be identical unless
 `withu = withv = {true}`. In this case, the actual parameters corresponding to **U** and **V** must
-differ. `m >= n` is assumed (with `m = a.length` and `n = a[0].length`). 
+differ. `m >= n` is assumed (with `m = a.length` and `n = a[0].length`).
 The following is the description of all parameters:
  *   `a` {Array}: Represents the matrix **A** to be decomposed
- *   `withu` (*Optional default is true*) {bool}: `true` if **U** is desired `false` otherwise
+ *   `withu` (*Optional default is true*) {bool | 'f'}: `true` if **U** is desired `false` otherwise. It can also be 'f' (see below)
  *   `withv` (*Optional default is true*) {bool}: `true` if **V** is desired `false` otherwise
  *   `eps` (*Optional*) {Number}: A constant used in the test for convergence; should not be smaller
   than the machine precision
- *   `tol` (*Optional*) {Number}: A machine dependent constant which should be set equal 
+ *   `tol` (*Optional*) {Number}: A machine dependent constant which should be set equal
     to `B/eps` where **B** is the smallest positive number representable in the computer
-    
+
 The function returns an object with the following values:
- * `q`: A vector holding the singular values of **A**; they are non-negative but not necessarily 
+ * `q`: A vector holding the singular values of **A**; they are non-negative but not necessarily
     ordered in decreasing sequence
- * `u`: Represents the matrix **U** with orthonormalized columns (if `withu` is `true` 
+ * `u`: Represents the matrix **U** with orthonormalized columns (if `withu` is `true`
     otherwise `u` is used as a working storage)
  * `v`: Represents the orthogonal matrix **V** (if `withv` is `true`, otherwise `v` is not used)
 
@@ -44,7 +44,7 @@ The extension part of **U** (`u[n]` to `u[m-1]`) are orthonormal bases of **A** 
 Golub and Reinsch first example
 ```javascript
 import { SVD } from 'svd-js'
-let a = [
+const a = [
       [22, 10, 2, 3, 7],
       [14, 7, 10, 0, 8],
       [-1, 13, -1, -11, 3],
@@ -55,7 +55,7 @@ let a = [
       [4, 5, 0, -2, 2]
     ]
 
-let { u, v, q } = SVD(a)
+const { u, v, q } = SVD(a)
 console.log(u)
 console.log(v)
 console.log(q)
@@ -68,7 +68,7 @@ Golub and Reinsch first example
 <html>
  <script src="https://unpkg.com/svd-js" type="application/javascript"></script>
  <script>
-   let a = [
+   const a = [
      [22, 10, 2, 3, 7],
      [14, 7, 10, 0, 8],
      [-1, 13, -1, -11, 3],
@@ -79,7 +79,7 @@ Golub and Reinsch first example
      [4, 5, 0, -2, 2]
    ]
 
-   let { u, v, q } = SVDJS.SVD(a)
+   const { u, v, q } = SVDJS.SVD(a)
    console.log(u)
    console.log(v)
    console.log(q)
