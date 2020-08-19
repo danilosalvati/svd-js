@@ -1,6 +1,6 @@
 # SVD-JS
 
-[![Build Status](https://travis-ci.org/danilosalvati/svd-js.svg?branch=master)](https://travis-ci.org/danilosalvati/svd-js)
+[![Build Status](https://api.travis-ci.com/danilosalvati/svd-js.svg?branch=master)](https://travis-ci.org/danilosalvati/svd-js)
 [![Coverage Status](https://coveralls.io/repos/github/danilosalvati/svd-js/badge.svg?branch=master)](https://coveralls.io/github/danilosalvati/svd-js?branch=master)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![npm](https://img.shields.io/npm/v/svd-js)](https://www.npmjs.com/package/svd-js)
