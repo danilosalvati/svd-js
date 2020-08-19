@@ -1,6 +1,6 @@
 {
   "name": "svd-js",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A package for the computation of Singular Value Decomposition",
   "main": "./build-commonjs/index.js",
   "module": "./build-es/index.js",
